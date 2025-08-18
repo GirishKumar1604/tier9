@@ -3,8 +3,7 @@ const userInput  = document.getElementById('userInput');
 const chatbox    = document.getElementById('chatbox');
 const sendButton = document.getElementById('sendButton');
 
-// ⬇️ Replace with your real endpoint (e.g., https://n8n.yourdomain.com/webhook/chat)
-const API_URL = 'https://saireddyg.app.n8n.cloud/webhook/19fa96ba-6571-4231-b0aa-e3462b077049';
+const API_URL = 'https://saireddyg.app.n8n.cloud/webhook/69886bb1-5834-48c7-a1fd-a40290bc4c22/chat';
 
 function addMessage(message, sender = 'Bot') {
   const p = document.createElement('p');
