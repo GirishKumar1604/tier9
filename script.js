@@ -3,7 +3,7 @@ const userInput  = document.getElementById('userInput');
 const chatbox    = document.getElementById('chatbox');
 const sendButton = document.getElementById('sendButton');
 
-const API_URL = 'https://saireddyg.app.n8n.cloud/webhook/69886bb1-5834-48c7-a1fd-a40290bc4c22/chat';
+const API_URL = 'https://saireddyg.app.n8n.cloud/webhook/4c172c9a-6e60-4634-8514-e35f09705888/chat';
 
 function addMessage(message, sender = 'Bot') {
   const p = document.createElement('p');

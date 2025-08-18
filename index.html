@@ -1,21 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Chatbot</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat with my n8n Bot</title>
+
+  <!-- n8n Chat widget styles -->
+  <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+
+  <style>
+    /* Optional custom styling */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Example: customize chat colors */
+    :root {
+      --chat--color-primary: #20b69e;
+      --chat--color-secondary: #e74266;
+      --chat--window--width: 400px;
+      --chat--window--height: 600px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Chat with my n8n Bot</h1>
+  <!-- Container for the chat widget -->
+  <div id="n8n-chat"></div>
 
-    <div id="chatbox"></div>
+  <!-- n8n Chat script -->
+  <script type="module">
+    import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
 
-    <form id="chatForm">
-        <label for="userInput" class="visually-hidden">Type your message</label>
-        <input type="text" id="userInput" placeholder="Type your message..." autocomplete="off">
-        <button type="submit" id="sendButton">Send</button>
-    </form>
-
-    <script src="script.js"></script>
-
+    createChat({
+      webhookUrl: 'https://saireddyg.app.n8n.cloud/webhook/4c172c9a-6e60-4634-8514-e35f09705888/chat',
+      target: '#n8n-chat',
+      mode: 'window',              // 'window' = floating chat bubble, 'fullscreen' = full page
+      showWelcomeScreen: false,    // skip welcome screen
+      initialMessages: [
+        'Hi there! 👋',
+        'I’m your n8n bot. How can I help you today?'
+      ],
+      enableStreaming: false       // set true if your workflow supports streaming responses
+    });
+  </script>
+</body>
+</html>
