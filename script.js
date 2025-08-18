@@ -4,7 +4,7 @@ const chatbox    = document.getElementById('chatbox');
 const sendButton = document.getElementById('sendButton');
 
 // 👉 Replace with your Production Webhook (not test)
-const API_URL = "https://saireddyg.app.n8n.cloud/webhook/19fa96ba-6571-4231-b0aa-e3462b077049";
+const API_URL = "http://localhost:5678/webhook-test/9fab88f7-a64e-4e08-ae93-cf891479450f";
 
 function addMessage(message, sender) {
   const p = document.createElement('p');
