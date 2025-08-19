@@ -1,63 +1,57 @@
-const chatForm   = document.getElementById('chatForm');
-const userInput  = document.getElementById('userInput');
-const chatbox    = document.getElementById('chatbox');
+// Get the HTML elements
+const chatForm = document.getElementById('chatForm');
+const userInput = document.getElementById('userInput');
+const chatbox = document.getElementById('chatbox');
 const sendButton = document.getElementById('sendButton');
 
-// 👉 Replace with your Production Webhook (not test)
-const API_URL = "https://saireddyg.app.n8n.cloud/webhook-test/19fa96ba-6571-4231-b0aa-e3462b077049";
-
+// Function to add a message to the chatbox
 function addMessage(message, sender) {
-  const p = document.createElement('p');
-  p.textContent = message;
-  p.classList.add(sender === 'You' ? 'user' : 'bot');
-  chatbox.appendChild(p);
-  chatbox.scrollTop = chatbox.scrollHeight;
+    const messageElement = document.createElement('p');
+
+    // Create and append the sender element safely
+    const senderElement = document.createElement('strong');
+    senderElement.textContent = `${sender}:`;
+    messageElement.appendChild(senderElement);
+
+    // Create and append the message text safely to prevent XSS
+    const messageText = document.createTextNode(` ${message}`);
+    messageElement.appendChild(messageText);
+
+    chatbox.appendChild(messageElement);
+    chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll to the latest message
 }
 
-async function sendMessage(userMessage) {
-  const res = await fetch(API_URL, {
-    method: 'POST',
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message: userMessage })
-  });
+// Handle form submission
+chatForm.addEventListener('submit', async (event) => {
+    event.preventDefault(); // Prevent the form from reloading the page
+    
+    const userMessage = userInput.value.trim();
+    if (!userMessage) return; // Don't send empty messages
 
-  if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    throw new Error(`HTTP ${res.status}: ${text || res.statusText}`);
-  }
+    // Display the user's message immediately
+    addMessage(userMessage, 'You');
+    userInput.value = ''; // Clear the input field
+    sendButton.disabled = true; // Disable button while waiting for response
 
-  const ct = res.headers.get("content-type") || "";
-  if (ct.includes("application/json")) {
-    return await res.json();
-  }
-  return { reply: await res.text() };
-}
+    // Send the message to the n8n webhook
+    try {
+        const response = await fetch('https://saireddyg.app.n8n.cloud/webhook-test/19fa96ba-6571-4231-b0aa-e3462b077049', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: userMessage }),
+        });
 
-chatForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
+        const data = await response.json();
+        
+        // Display the chatbot's response
+        addMessage(data.reply, 'Bot');
 
-  const userMessage = userInput.value.trim();
-  if (!userMessage) return;
-
-  addMessage(userMessage, 'You');
-  userInput.value = '';
-  sendButton.disabled = true;
-
-  // Typing placeholder
-  const typing = document.createElement('p');
-  typing.textContent = '...';
-  typing.classList.add('bot');
-  chatbox.appendChild(typing);
-  chatbox.scrollTop = chatbox.scrollHeight;
-
-  try {
-    const data = await sendMessage(userMessage);
-    typing.textContent = data.reply || "No reply received.";
-  } catch (err) {
-    console.error(err);
-    typing.textContent = "Error: " + err.message;
-  } finally {
-    sendButton.disabled = false;
-    userInput.focus();
-  }
+    } catch (error) {
+        console.error('Error:', error);
+        addMessage('Sorry, something went wrong.', 'Bot');
+    } finally {
+        sendButton.disabled = false; // Re-enable the button
+    }
 });
